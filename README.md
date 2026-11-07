@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://gitshame.dev">🚀 Try GitShame</a>
+  <a href="https://gitshame.vercel.app/">🚀 Try GitShame</a>
   &nbsp;·&nbsp;
   <a href="https://github.com/ravithemore/git-shame">⭐ View Source</a>
 </p>
