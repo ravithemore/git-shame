@@ -2,8 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { Swords, Trophy, Skull, Flame, Share2, ArrowRight, Download, Zap, RefreshCw } from "lucide-react";
-import confetti from "canvas-confetti";
-import * as htmlToImage from "html-to-image";
+import { fireConfetti, captureToPng } from "@/lib/export-utils";
 import { VsBattleResult } from "@/types";
 
 interface VsBattleCardProps {
@@ -29,7 +28,7 @@ export function VsBattleCard({ battle, onReset }: VsBattleCardProps) {
     if (!battleRef.current || downloading) return;
     try {
       setDownloading(true);
-      const dataUrl = await htmlToImage.toPng(battleRef.current, {
+      const dataUrl = await captureToPng(battleRef.current, {
         cacheBust: true,
         pixelRatio: 2,
       });
@@ -39,7 +38,7 @@ export function VsBattleCard({ battle, onReset }: VsBattleCardProps) {
       link.href = dataUrl;
       link.click();
 
-      confetti({
+      fireConfetti({
         particleCount: 60,
         spread: 80,
         origin: { y: 0.6 },

@@ -19,8 +19,7 @@ import {
   Receipt,
   ShieldAlert
 } from "lucide-react";
-import confetti from "canvas-confetti";
-import * as htmlToImage from "html-to-image";
+import { fireConfetti, captureToPng } from "@/lib/export-utils";
 import { RoastResult, GitHubStats } from "@/types";
 
 interface RoastCardProps {
@@ -52,7 +51,7 @@ export function RoastCard({ roast, stats, onChallengeFriend, onRegenerateTone }:
     if (!cardRef.current || downloading) return;
     try {
       setDownloading(true);
-      const dataUrl = await htmlToImage.toPng(cardRef.current, {
+      const dataUrl = await captureToPng(cardRef.current, {
         cacheBust: true,
         pixelRatio: 2.5,
       });
@@ -62,7 +61,7 @@ export function RoastCard({ roast, stats, onChallengeFriend, onRegenerateTone }:
       link.href = dataUrl;
       link.click();
 
-      confetti({
+      fireConfetti({
         particleCount: 50,
         spread: 60,
         origin: { y: 0.8 },

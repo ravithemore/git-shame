@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import confetti from "canvas-confetti";
+import { fireConfetti } from "@/lib/export-utils";
 import { Navbar } from "@/components/Navbar";
 import { SearchHero } from "@/components/SearchHero";
 import { RoastCard } from "@/components/RoastCard";
@@ -42,7 +42,7 @@ export default function HomePage() {
       setStats(data.stats);
 
       // Trigger celebratory/mocking confetti
-      confetti({
+      fireConfetti({
         particleCount: 40,
         spread: 70,
         origin: { y: 0.6 },
@@ -84,7 +84,7 @@ export default function HomePage() {
 
       setBattle(data.battle);
 
-      confetti({
+      fireConfetti({
         particleCount: 60,
         spread: 90,
         origin: { y: 0.5 },
@@ -104,6 +104,13 @@ export default function HomePage() {
     window.scrollTo({ top: 120, behavior: "smooth" });
   };
 
+  const handleToneChange = (tone: RoastTone) => {
+    setActiveTone(tone);
+    if (roast) {
+      handleRoastSubmit(roast.username, tone);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white bg-grid-pattern selection:bg-rose-500 selection:text-white flex flex-col justify-between">
       <div>
@@ -114,13 +121,7 @@ export default function HomePage() {
           onBattleSubmit={handleBattleSubmit}
           loading={loading}
           activeTone={activeTone}
-          setActiveTone={(tone) => {
-            setActiveTone(tone);
-            // If already roasted someone, re-roast with new tone
-            if (roast) {
-              handleRoastSubmit(roast.username, tone);
-            }
-          }}
+          setActiveTone={handleToneChange}
           initialUsername={inputUsername}
         />
 

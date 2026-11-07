@@ -3,6 +3,16 @@
 import React, { useState, useEffect } from "react";
 import { Flame, Swords, Search, Sparkles, AlertCircle, RefreshCw, Briefcase, UserCheck, ShieldAlert } from "lucide-react";
 import { RoastTone } from "@/types";
+import { sounds } from "@/lib/audio";
+
+const cleanHandle = (input: string) => {
+  return input
+    .trim()
+    .replace(/^https?:\/\/(www\.)?github\.com\//i, "")
+    .replace(/^github\.com\//i, "")
+    .replace(/\/.*$/, "")
+    .replace(/^@/, "");
+};
 
 interface SearchHeroProps {
   onRoastSubmit: (username: string, tone: RoastTone) => Promise<void>;
@@ -90,14 +100,19 @@ export function SearchHero({
 
   const handleSoloSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username.trim() || loading) return;
-    onRoastSubmit(username.trim(), activeTone);
+    const cleaned = cleanHandle(username);
+    if (!cleaned || loading) return;
+    sounds.playBlip();
+    onRoastSubmit(cleaned, activeTone);
   };
 
   const handleVsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user1.trim() || !user2.trim() || loading) return;
-    onBattleSubmit(user1.trim(), user2.trim());
+    const c1 = cleanHandle(user1);
+    const c2 = cleanHandle(user2);
+    if (!c1 || !c2 || loading) return;
+    sounds.playFightBell();
+    onBattleSubmit(c1, c2);
   };
 
   return (
