@@ -22,35 +22,7 @@ Built for 100% free hosting and zero API costs.
 - 📸 **1-Click Shareable PNG Card**: Instant high-resolution image generation powered by `html-to-image` and celebration confetti, optimized for sharing on **X (Twitter)**, **LinkedIn**, and **Reddit (r/programmerhumor)**.
 - ⭐️ **Pre-Loaded Hall of Shame**: One-click preview roasts for tech celebrities like Linus Torvalds, Dan Abramov, and shadcn.
 
----
 
-## 🛠️ Architecture & Free-Tier Engineering
-
-GitShame is designed to cost **$0.00** to run, even if it goes viral on Reddit or Twitter:
-
-| Layer | Technology | Free Tier Strategy |
-| :--- | :--- | :--- |
-| **Framework** | Next.js 15 (App Router), React 19, TypeScript | Serverless, Edge-ready, fast SSG/SSR |
-| **Styling** | Tailwind CSS, Lucide React, Canvas Confetti | Cyberpunk dark aesthetic with glow gradients |
-| **AI Engine** | Google Gemini 1.5 Flash (`@google/generative-ai`) | Up to 1,500 requests/day for $0.00 free |
-| **Fallback Engine** | Built-in Heuristic Satire Synthesizer | **Zero API key required**; generates dynamic roasts out-of-the-box if no key is provided |
-| **Cache & Throttling** | In-Memory TTL Cache (6-hour expiry) | Instant sub-50ms repeat loads, preserves API limits |
-| **Export Engine** | `html-to-image` client-side canvas rendering | Zero server CPU or GPU cost for image generation |
-
----
-
-## 💼 Bullet Points for Your Resume
-
-You can proudly add this project to your resume under **Projects**:
-
-> **GitShame — Full-Stack AI Developer Profile Roaster & Benchmarking Platform**  
-> *Next.js 15, TypeScript, React 19, Tailwind CSS, Google Gemini API, GitHub REST API, html-to-image*
-> - Engineered an interactive developer analytics platform that audits public GitHub commits, repo longevity, and commit timestamp distributions to generate satirical technical debt evaluations and 1v1 battle comparisons.
-> - Implemented resilient LLM prompt orchestration using Google Gemini Flash with strict JSON schema validation, backed by an offline heuristic fallback engine and a TTL in-memory caching layer to eliminate API costs and withstand traffic spikes.
-> - Built a client-side vector-to-raster graphic export engine with `html-to-image`, enabling instantaneous client-side PNG generation for viral social sharing on X/Twitter and LinkedIn without consuming server compute.
-> - Designed full responsive dark-mode UI with custom animations, dynamic loading sequences, and sub-100ms UI state transitions.
-
----
 
 ## 🚀 Quick Start (Running Locally)
 
@@ -89,14 +61,7 @@ npm start
 
 ---
 
-## 🚢 1-Click Free Deployment (Vercel)
 
-1. Push this project to your GitHub repository.
-2. Go to [vercel.com](https://vercel.com) and click **"Add New Project"**.
-3. Import your repo and hit **Deploy**.
-4. (Optional) In Vercel Project Settings > Environment Variables, add `GEMINI_API_KEY` for live AI generation.
-
----
 
 ## ⚖️ License
 MIT License. Built for satirical dev fun.
