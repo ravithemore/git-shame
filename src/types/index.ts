@@ -30,6 +30,8 @@ export interface GitHubStats {
   weekendCommitsCount: number;
   abandonedReposCount: number; // repos with 0 stars and no recent updates
   averageCommitMessageLength: number;
+  sampleRepoNames: string[];
+  accountAgeYears: number;
 }
 
 export interface RoastResult {
@@ -67,3 +69,4 @@ export interface VsBattleResult {
     reason: string;
   }[];
 }
+

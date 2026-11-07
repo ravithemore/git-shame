@@ -100,3 +100,4 @@ npm start
 
 ## ⚖️ License
 MIT License. Built for satirical dev fun.
+

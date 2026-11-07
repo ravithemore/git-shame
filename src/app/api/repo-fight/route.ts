@@ -24,55 +24,69 @@ export async function POST(req: NextRequest) {
       generateRoast(stats2, "savage"),
     ]);
 
-    // Categories
+    // Ensure scores are never identical
+    if (roast1.shameScore === roast2.shameScore) {
+      if (stats1.publicRepos >= stats2.publicRepos) {
+        roast1.shameScore = Math.min(99, roast1.shameScore + 3);
+      } else {
+        roast2.shameScore = Math.min(99, roast2.shameScore + 3);
+      }
+    }
+
+    // Dynamic category faceoffs
     const categoryWinners = [
       {
-        category: "Commit Message Quality Disaster",
+        category: "Commit Hygiene Disaster",
         winner:
           stats1.cursedCommits.length >= stats2.cursedCommits.length
             ? stats1.username
             : stats2.username,
         reason:
           stats1.cursedCommits.length >= stats2.cursedCommits.length
-            ? `@${stats1.username} authored ${stats1.cursedCommits.length} single-word/cursed commits (e.g. '${stats1.cursedCommits[0]?.message || 'fix'}')`
-            : `@${stats2.username} authored ${stats2.cursedCommits.length} single-word/cursed commits (e.g. '${stats2.cursedCommits[0]?.message || 'update'}')`,
+            ? `@${stats1.username} authored ${stats1.cursedCommits.length} single-word commits (e.g. '${stats1.cursedCommits[0]?.message || 'fix'}') vs @${stats2.username}'s ${stats2.cursedCommits.length}`
+            : `@${stats2.username} authored ${stats2.cursedCommits.length} single-word commits (e.g. '${stats2.cursedCommits[0]?.message || 'update'}') vs @${stats1.username}'s ${stats1.cursedCommits.length}`,
       },
       {
-        category: "Nocturnal Vampire Coder (12am-5am)",
+        category: "Nocturnal Vampire Coder (12 AM - 5 AM)",
         winner:
           stats1.lateNightCommitsCount >= stats2.lateNightCommitsCount
             ? stats1.username
             : stats2.username,
         reason:
           stats1.lateNightCommitsCount >= stats2.lateNightCommitsCount
-            ? `@${stats1.username} committed ${stats1.lateNightCommitsCount} times in the dead of night`
-            : `@${stats2.username} committed ${stats2.lateNightCommitsCount} times in the dead of night`,
+            ? `@${stats1.username} committed ${stats1.lateNightCommitsCount} times in the dead of night vs @${stats2.username}'s ${stats2.lateNightCommitsCount}`
+            : `@${stats2.username} committed ${stats2.lateNightCommitsCount} times in the dead of night vs @${stats1.username}'s ${stats1.lateNightCommitsCount}`,
       },
       {
-        category: "Graveyard of Abandoned Repos",
+        category: "Graveyard of Abandoned Repositories",
         winner:
           stats1.abandonedReposCount >= stats2.abandonedReposCount
             ? stats1.username
             : stats2.username,
         reason:
           stats1.abandonedReposCount >= stats2.abandonedReposCount
-            ? `@${stats1.username} is hoarding ${stats1.abandonedReposCount} dead projects`
-            : `@${stats2.username} is hoarding ${stats2.abandonedReposCount} dead projects`,
+            ? `@${stats1.username} is hoarding ${stats1.abandonedReposCount} dead repos with 0 stars vs @${stats2.username}'s ${stats2.abandonedReposCount}`
+            : `@${stats2.username} is hoarding ${stats2.abandonedReposCount} dead repos with 0 stars vs @${stats1.username}'s ${stats1.abandonedReposCount}`,
       },
       {
-        category: "Overall Git Shame Champion",
-        winner: roast1.shameScore >= roast2.shameScore ? stats1.username : stats2.username,
+        category: "Seniority in Technical Debt",
+        winner:
+          stats1.accountAgeYears >= stats2.accountAgeYears
+            ? stats1.username
+            : stats2.username,
         reason:
-          roast1.shameScore >= roast2.shameScore
-            ? `@${stats1.username} takes the shame crown with a score of ${roast1.shameScore}/100!`
-            : `@${stats2.username} takes the shame crown with a score of ${roast2.shameScore}/100!`,
+          stats1.accountAgeYears >= stats2.accountAgeYears
+            ? `@${stats1.username} has been committing crimes on GitHub for ${stats1.accountAgeYears} years vs @${stats2.username}'s ${stats2.accountAgeYears} years`
+            : `@${stats2.username} has been committing crimes on GitHub for ${stats2.accountAgeYears} years vs @${stats1.username}'s ${stats1.accountAgeYears} years`,
       },
     ];
 
     const shameChampion =
       roast1.shameScore >= roast2.shameScore ? stats1.username : stats2.username;
+    const runnerUp =
+      shameChampion === stats1.username ? stats2.username : stats1.username;
 
-    const battleSummary = `@${shameChampion} has been officially declared the bigger menace to version control and software stability.`;
+    const battleSummary = `After a ruthless code hygiene audit, @${shameChampion} has officially outperformed @${runnerUp} in sheer technical entropy.`;
 
     const result: VsBattleResult = {
       player1: roast1,

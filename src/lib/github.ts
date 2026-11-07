@@ -113,6 +113,39 @@ export async function fetchGitHubUserData(username: string): Promise<GitHubStats
     }
   }
 
+  // If public events had no commits, try fetching from their most recent repo directly
+  if (commits.length === 0 && Array.isArray(repos) && repos.length > 0) {
+    try {
+      const topRepo = repos[0];
+      const repoCommitsRes = await fetch(
+        `https://api.github.com/repos/${encodeURIComponent(cleanUsername)}/${encodeURIComponent(topRepo.name)}/commits?per_page=10`,
+        { headers, next: { revalidate: 3600 } }
+      );
+      if (repoCommitsRes.ok) {
+        const repoCommits = await repoCommitsRes.json();
+        if (Array.isArray(repoCommits)) {
+          for (const item of repoCommits) {
+            const msg = item.commit?.message?.trim()?.split("\n")[0] || "";
+            const dateStr = item.commit?.author?.date || new Date().toISOString();
+            const dateObj = new Date(dateStr);
+            if (msg) {
+              commits.push({
+                sha: (item.sha || "").slice(0, 7),
+                message: msg,
+                date: dateStr,
+                repo: topRepo.name,
+                hour: dateObj.getHours(),
+                isWeekend: dateObj.getDay() === 0 || dateObj.getDay() === 6,
+              });
+            }
+          }
+        }
+      }
+    } catch (e) {
+      // ignore silently if individual repo commits fetch is rate-limited
+    }
+  }
+
   // Filter cursed commits
   const cursedCommits = commits.filter((c) => {
     const msg = c.message.trim();
@@ -135,8 +168,13 @@ export async function fetchGitHubUserData(username: string): Promise<GitHubStats
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
+  const sampleRepoNames: string[] = [];
+
   if (Array.isArray(repos)) {
     for (const r of repos) {
+      if (r.name) {
+        sampleRepoNames.push(r.name);
+      }
       if (r.language) {
         languageCounts[r.language] = (languageCounts[r.language] || 0) + 1;
       }
@@ -154,6 +192,10 @@ export async function fetchGitHubUserData(username: string): Promise<GitHubStats
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
+
+  const createdYear = new Date(user.created_at).getFullYear();
+  const currentYear = new Date().getFullYear();
+  const accountAgeYears = Math.max(1, currentYear - createdYear);
 
   return {
     username: user.login,
@@ -176,5 +218,8 @@ export async function fetchGitHubUserData(username: string): Promise<GitHubStats
     weekendCommitsCount,
     abandonedReposCount,
     averageCommitMessageLength,
+    sampleRepoNames: sampleRepoNames.slice(0, 6),
+    accountAgeYears,
   };
 }
+
