@@ -20,8 +20,8 @@ interface SearchHeroProps {
   activeTone: RoastTone;
   setActiveTone: (tone: RoastTone) => void;
   initialUsername?: string;
-  mode: "solo" | "fight" | "team";
-  setMode: (mode: "solo" | "fight" | "team") => void;
+  mode: "solo" | "fight";
+  setMode: (mode: "solo" | "fight") => void;
 }
 
 interface Persona {
@@ -63,7 +63,7 @@ const PERSONAS: Persona[] = [
     name: "FBI Profiler",
     tag: "Forensic",
     tagColor: "text-tertiary-container bg-tertiary-container/10",
-    icon: "policy",
+    icon: "shield",
     desc: "Unpacks the emotional degradation of the engineer across git blame logs.",
   },
 ];
@@ -88,9 +88,8 @@ export function SearchHero({
   setMode,
 }: SearchHeroProps) {
   const [username, setUsername] = useState(initialUsername || "torvalds");
-  const [fighter1, setFighter1] = useState("tailwindlabs/tailwindcss");
-  const [fighter2, setFighter2] = useState("facebook/stylex");
-  const [teamOrg, setTeamOrg] = useState("vercel");
+  const [fighter1, setFighter1] = useState("ravithemore");
+  const [fighter2, setFighter2] = useState("Sejal-shh");
   const [liveSinsCount, setLiveSinsCount] = useState(1429802);
 
   useEffect(() => {
@@ -105,6 +104,21 @@ export function SearchHero({
       setLiveSinsCount((prev) => prev + Math.floor(Math.random() * 3) + 1);
     }, 3000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Keyboard shortcut listener for Cmd+K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        const input = document.getElementById("repo-input");
+        if (input) {
+          input.focus();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleSoloSubmit = (e: React.FormEvent) => {
@@ -128,10 +142,11 @@ export function SearchHero({
     setUsername(handle);
     sounds.playBlip();
     if (mode !== "solo") setMode("solo");
+    onRoastSubmit(handle, activeTone);
   };
 
   return (
-    <section className="relative w-full max-w-[1440px] mx-auto px-margin-mobile md:px-margin pt-space-xl md:pt-space-2xl pb-space-2xl">
+    <section className="relative w-full max-w-[1440px] mx-auto px-margin-mobile md:px-margin pt-space-lg pb-space-2xl">
       {/* Ambient Atmospheric Radiant Light Fields */}
       <div className="absolute top-[-140px] left-1/2 -translate-x-1/2 w-[1100px] h-[580px] bg-gradient-to-b from-primary-container/15 via-secondary-container/5 to-transparent blur-[130px] pointer-events-none rounded-full" />
       <div className="absolute top-[480px] -left-48 w-[520px] h-[520px] bg-tertiary-container/10 blur-[140px] pointer-events-none rounded-full" />
@@ -144,11 +159,11 @@ export function SearchHero({
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-container opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-container" />
           </span>
-          <span className="font-mono text-label-code-sm text-primary tracking-wide uppercase font-semibold">
+          <span className="font-mono text-label-code-sm text-primary tracking-wide uppercase font-semibold whitespace-nowrap">
             v3.4 Code Sin Neural Engine
           </span>
           <span className="font-mono text-label-code-sm text-on-surface-variant/40">/</span>
-          <span className="font-body text-body-sm text-on-surface-variant flex items-center gap-1">
+          <span className="font-body text-body-sm text-on-surface-variant flex items-center gap-1 whitespace-nowrap">
             Zero Discretion Policy{" "}
             <span className="material-symbols-outlined text-[14px] text-primary-container">
               verified
@@ -157,7 +172,7 @@ export function SearchHero({
         </div>
       </div>
 
-      {/* Main Editorial Headline (Hero) */}
+      {/* Main Editorial Headline */}
       <div className="text-center max-w-5xl mx-auto space-y-space-md mb-space-xl">
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight font-extrabold text-on-surface leading-tight">
           The future of code review is <br className="hidden sm:inline" />
@@ -188,7 +203,7 @@ export function SearchHero({
         </p>
       </div>
 
-      {/* Mode Selector Segmented Controls */}
+      {/* Mode Selector Segmented Controls: Only Working Modes */}
       <div className="flex justify-center mb-space-lg">
         <div className="inline-flex items-center p-1.5 rounded-full bg-surface-container-low/90 backdrop-blur-2xl shadow-xl border border-white/5">
           <button
@@ -225,22 +240,6 @@ export function SearchHero({
               HOT
             </span>
           </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setMode("team");
-              sounds.playBlip();
-            }}
-            className={`flex items-center gap-space-xs px-space-lg py-2 rounded-full font-body text-body-sm transition-all duration-200 ${
-              mode === "team"
-                ? "font-semibold text-on-primary-container bg-primary-container shadow-[0_0_16px_rgba(0,245,160,0.3)]"
-                : "font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[16px]">group</span>
-            <span>Team Sins Audit</span>
-          </button>
         </div>
       </div>
 
@@ -253,8 +252,8 @@ export function SearchHero({
               onSubmit={handleSoloSubmit}
               className="relative flex flex-col sm:flex-row items-center gap-space-xs p-2 rounded-3xl sm:rounded-full bg-surface-container/95 backdrop-blur-3xl shadow-[0_12px_40px_-10px_rgba(0,0,0,0.8)] border border-white/10 transition-all duration-300"
             >
-              <div className="flex items-center w-full pl-space-md py-1.5 gap-space-sm flex-1">
-                <span className="font-mono text-label-code-md text-primary-container font-bold select-none flex items-center gap-1">
+              <div className="flex items-center w-full pl-space-md py-1.5 gap-space-sm flex-1 min-w-0">
+                <span className="font-mono text-label-code-md text-primary-container font-bold select-none flex items-center gap-1.5 shrink-0 whitespace-nowrap">
                   <span className="material-symbols-outlined text-[18px]">terminal</span>
                   git shame @
                 </span>
@@ -264,19 +263,22 @@ export function SearchHero({
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   placeholder="torvalds/linux or github-username"
-                  className="w-full bg-transparent font-mono text-label-code-md text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none"
+                  className="w-full min-w-0 flex-1 bg-transparent font-mono text-label-code-md text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none px-1"
                   disabled={loading}
                 />
               </div>
 
-              <div className="flex items-center gap-space-xs w-full sm:w-auto justify-end pr-1 pb-1 sm:pb-0">
-                <span className="hidden md:inline-flex items-center px-2 py-1 rounded bg-surface-container-highest font-mono text-[11px] text-on-surface-variant/70 border border-white/5">
+              <div className="flex items-center gap-space-xs w-full sm:w-auto justify-end pr-1 pb-1 sm:pb-0 shrink-0">
+                <span
+                  title="Keyboard Shortcut"
+                  className="hidden md:inline-flex items-center px-2 py-1 rounded bg-surface-container-highest font-mono text-[11px] text-on-surface-variant/70 border border-white/5 shrink-0 select-none"
+                >
                   ⌘K
                 </span>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-xl py-3.5 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container font-display text-body-sm font-bold tracking-tight shadow-[0_0_24px_rgba(0,245,160,0.45)] hover:shadow-[0_0_36px_rgba(0,245,160,0.7)] transition-all duration-200 active:scale-95 whitespace-nowrap disabled:opacity-50"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-xl py-3.5 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container font-display text-body-sm font-bold tracking-tight shadow-[0_0_24px_rgba(0,245,160,0.45)] hover:shadow-[0_0_36px_rgba(0,245,160,0.7)] transition-all duration-200 active:scale-95 whitespace-nowrap shrink-0 disabled:opacity-50"
                 >
                   <span
                     className={`material-symbols-outlined text-[20px] ${
@@ -291,7 +293,7 @@ export function SearchHero({
               </div>
             </form>
           </div>
-        ) : mode === "fight" ? (
+        ) : (
           <div className="relative group">
             <div className="absolute -inset-1 bg-gradient-to-r from-primary-container/30 via-tertiary-container/20 to-secondary/30 rounded-3xl blur-xl opacity-60 group-hover:opacity-100 transition duration-500" />
             <form
@@ -299,32 +301,36 @@ export function SearchHero({
               className="relative p-space-md rounded-3xl bg-surface-container/95 backdrop-blur-3xl shadow-[0_12px_40px_-10px_rgba(0,0,0,0.8)] border border-white/10 space-y-3"
             >
               <div className="grid grid-cols-1 md:grid-cols-11 gap-2 items-center">
-                <div className="md:col-span-5 flex items-center bg-surface-container-lowest px-4 py-2.5 rounded-2xl border border-white/5">
-                  <span className="font-mono text-primary-container font-bold mr-2 text-xs">P1:</span>
+                <div className="md:col-span-5 flex items-center bg-surface-container-lowest px-4 py-2.5 rounded-2xl border border-white/5 min-w-0">
+                  <span className="font-mono text-primary-container font-bold mr-2 text-xs shrink-0 whitespace-nowrap">
+                    CORNER A:
+                  </span>
                   <input
                     type="text"
                     value={fighter1}
                     onChange={(e) => setFighter1(e.target.value)}
                     placeholder="e.g. ravithemore"
-                    className="w-full bg-transparent font-mono text-sm text-on-surface focus:outline-none"
+                    className="w-full min-w-0 flex-1 bg-transparent font-mono text-sm text-on-surface focus:outline-none"
                     disabled={loading}
                   />
                 </div>
 
-                <div className="md:col-span-1 flex justify-center">
-                  <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-display text-xs font-black text-primary-container border border-white/10">
+                <div className="md:col-span-1 flex justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-display text-xs font-black text-primary-container border border-white/10 shrink-0">
                     VS
                   </div>
                 </div>
 
-                <div className="md:col-span-5 flex items-center bg-surface-container-lowest px-4 py-2.5 rounded-2xl border border-white/5">
-                  <span className="font-mono text-tertiary-container font-bold mr-2 text-xs">P2:</span>
+                <div className="md:col-span-5 flex items-center bg-surface-container-lowest px-4 py-2.5 rounded-2xl border border-white/5 min-w-0">
+                  <span className="font-mono text-tertiary-container font-bold mr-2 text-xs shrink-0 whitespace-nowrap">
+                    CORNER B:
+                  </span>
                   <input
                     type="text"
                     value={fighter2}
                     onChange={(e) => setFighter2(e.target.value)}
                     placeholder="e.g. Sejal-shh"
-                    className="w-full bg-transparent font-mono text-sm text-on-surface focus:outline-none"
+                    className="w-full min-w-0 flex-1 bg-transparent font-mono text-sm text-on-surface focus:outline-none"
                     disabled={loading}
                   />
                 </div>
@@ -334,7 +340,7 @@ export function SearchHero({
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-xl py-3 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container font-display text-body-sm font-bold tracking-tight shadow-[0_0_24px_rgba(0,245,160,0.45)] transition-all duration-200 active:scale-95 disabled:opacity-50"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-xl py-3 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container font-display text-body-sm font-bold tracking-tight shadow-[0_0_24px_rgba(0,245,160,0.45)] transition-all duration-200 active:scale-95 whitespace-nowrap shrink-0 disabled:opacity-50"
                 >
                   <span className="material-symbols-outlined text-[20px]">sports_martial_arts</span>
                   <span>{loading ? "Simulating Bloodbath..." : "Start 1v1 Battle"}</span>
@@ -342,39 +348,9 @@ export function SearchHero({
               </div>
             </form>
           </div>
-        ) : (
-          <div className="relative group">
-            <div className="p-6 rounded-3xl bg-surface-container/95 backdrop-blur-3xl shadow-xl border border-white/10 text-center space-y-3">
-              <span className="font-mono text-xs uppercase tracking-wider text-tertiary-container font-bold">
-                Team Sins Audit
-              </span>
-              <p className="font-body text-sm text-on-surface-variant max-w-md mx-auto">
-                Benchmark an entire engineering organization&apos;s architectural sins and rank all
-                contributors by technical debt.
-              </p>
-              <div className="flex max-w-md mx-auto gap-2">
-                <input
-                  type="text"
-                  value={teamOrg}
-                  onChange={(e) => setTeamOrg(e.target.value)}
-                  placeholder="github organization name"
-                  className="flex-1 bg-surface-container-lowest px-4 py-2 rounded-full font-mono text-sm text-on-surface focus:outline-none border border-white/10"
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleQuickVictim(teamOrg);
-                  }}
-                  className="px-5 py-2 rounded-full bg-primary-container text-on-primary-container font-body text-sm font-bold"
-                >
-                  Audit Org
-                </button>
-              </div>
-            </div>
-          </div>
         )}
 
-        {/* Quick victim pills */}
+        {/* Quick victim pills - All 100% working click handlers */}
         <div className="flex flex-wrap items-center justify-center gap-space-xs mt-space-md text-body-sm text-on-surface-variant font-mono">
           <span className="text-outline uppercase text-[11px] tracking-wider font-semibold mr-1">
             Frequent Victims:
@@ -384,7 +360,7 @@ export function SearchHero({
               key={v.handle}
               type="button"
               onClick={() => handleQuickVictim(v.handle)}
-              className="px-3 py-1 rounded-full bg-surface-container-high/80 hover:bg-surface-container-highest text-on-surface hover:text-primary-container border border-white/5 transition-all duration-150 flex items-center gap-1 text-xs"
+              className="px-3 py-1 rounded-full bg-surface-container-high/80 hover:bg-surface-container-highest text-on-surface hover:text-primary-container border border-white/5 transition-all duration-150 flex items-center gap-1 text-xs cursor-pointer"
             >
               <span className="text-outline">@</span>
               {v.label}
@@ -411,7 +387,7 @@ export function SearchHero({
                   setActiveTone(p.id);
                   sounds.playBlip();
                 }}
-                className={`text-left p-space-md rounded-2xl transition-all duration-200 border ${
+                className={`text-left p-space-md rounded-2xl transition-all duration-200 border cursor-pointer ${
                   isActive
                     ? "bg-surface-container-high/90 shadow-md ring-2 ring-primary-container/80 border-primary-container/50"
                     : "bg-surface-container/70 shadow-md hover:bg-surface-container-high/80 border-white/5"
@@ -582,31 +558,20 @@ export function SearchHero({
               </div>
 
               {/* Floating Mini Integration Tech Orbitals */}
-              <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-surface-container-high/90 shadow-md font-mono text-[11px] text-on-surface flex items-center gap-1 border border-white/5">
+              <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-surface-container-high/90 shadow-md font-mono text-[11px] text-on-surface flex items-center gap-1 border border-white/5 select-none">
                 <span className="material-symbols-outlined text-[14px] text-primary-container">
                   alt_route
                 </span>{" "}
                 git push -f
               </div>
-              <div className="absolute -bottom-2 right-8 px-3 py-1 rounded-full bg-surface-container-high/90 shadow-md font-mono text-[11px] text-on-surface flex items-center gap-1 border border-white/5">
+              <div className="absolute -bottom-2 right-8 px-3 py-1 rounded-full bg-surface-container-high/90 shadow-md font-mono text-[11px] text-on-surface flex items-center gap-1 border border-white/5 select-none">
                 <span className="material-symbols-outlined text-[14px] text-error">bug_report</span>{" "}
                 120 TODOs from 2017
               </div>
             </div>
 
-            {/* Bottom Action within Canvas */}
-            <div className="mt-space-lg flex items-center gap-space-md">
-              <button
-                type="button"
-                onClick={() => {
-                  sounds.playBlip();
-                  onRoastSubmit(username || "torvalds", activeTone);
-                }}
-                className="inline-flex items-center gap-space-xs px-space-md py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5"
-              >
-                <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-                <span>Inspect Raw Receipt #8942</span>
-              </button>
+            {/* Bottom Real Action */}
+            <div className="mt-space-lg flex items-center justify-center">
               <button
                 type="button"
                 onClick={() => {
@@ -617,7 +582,7 @@ export function SearchHero({
                     "_blank"
                   );
                 }}
-                className="inline-flex items-center gap-space-xs px-space-md py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5"
+                className="inline-flex items-center gap-space-xs px-space-xl py-2.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5 cursor-pointer shadow-md"
               >
                 <span className="material-symbols-outlined text-[18px]">share</span>
                 <span>Share to X / Twitter</span>
@@ -671,19 +636,6 @@ export function SearchHero({
                   VERDICT: GUILTY AS CHARGED
                 </span>
               </div>
-            </div>
-
-            {/* Orbit Sin 6: Tech Ecosystem Pills */}
-            <div className="w-full max-w-xs flex flex-wrap gap-1.5 justify-center lg:justify-end">
-              <span className="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-mono border border-white/5">
-                VS Code Extension
-              </span>
-              <span className="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-mono border border-white/5">
-                GitHub Actions Bot
-              </span>
-              <span className="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant text-[11px] font-mono border border-white/5">
-                Slack Shame Ticker
-              </span>
             </div>
           </div>
         </div>

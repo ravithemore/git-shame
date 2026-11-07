@@ -16,6 +16,7 @@ export function RoastCard({ roast, stats, onChallengeFriend }: RoastCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
   const [badgeCopied, setBadgeCopied] = useState(false);
   const [showBadgeModal, setShowBadgeModal] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -55,10 +56,33 @@ export function RoastCard({ roast, stats, onChallengeFriend }: RoastCardProps) {
     }
   };
 
-  const handleShareTwitter = () => {
-    const tweetText = `I just got brutally roasted by GitShame 🔥\n\nOffender: @${roast.username}\nShame Score: ${roast.shameScore}/100\nTitle: "${roast.title}"\n\nCheck your GitHub sins at gitshame.dev\n\n#GitShame #DevHumor`;
-    const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
-    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  const handleShare = async () => {
+    sounds.playBlip();
+    const shareUrl = typeof window !== "undefined"
+      ? `${window.location.origin}/?user=${encodeURIComponent(roast.username)}`
+      : `https://gitshame.dev/?user=${encodeURIComponent(roast.username)}`;
+    const shareText = `Check out @${roast.username}'s GitShame Developer Evaluation (${roast.shameScore}/100): "${roast.title}" 🔥`;
+
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({
+          title: `GitShame - @${roast.username}`,
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      } catch {
+        // user dismissed or canceled native share, fallback to copy
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2500);
+    } catch {
+      // fallback
+    }
   };
 
   const handleCopyText = async () => {
@@ -167,11 +191,13 @@ export function RoastCard({ roast, stats, onChallengeFriend }: RoastCardProps) {
           </button>
           <button
             type="button"
-            onClick={handleShareTwitter}
+            onClick={handleShare}
             className="px-space-md py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5 flex items-center gap-1"
           >
-            <span className="material-symbols-outlined text-[16px]">share</span>
-            <span>Share</span>
+            <span className="material-symbols-outlined text-[16px]">
+              {shareCopied ? "check" : "share"}
+            </span>
+            <span>{shareCopied ? "Link Copied!" : "Share Link"}</span>
           </button>
           <button
             type="button"
@@ -398,7 +424,7 @@ export function RoastCard({ roast, stats, onChallengeFriend }: RoastCardProps) {
               </div>
               <div className="flex justify-between text-sm font-bold text-error">
                 <span>NET REPUTATIONAL LOSS:</span>
-                <span>-${(roast.shameScore * 1420).toLocaleString()}</span>
+                <span suppressHydrationWarning>-${(roast.shameScore * 1420).toLocaleString("en-US")}</span>
               </div>
             </div>
 

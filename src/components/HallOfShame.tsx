@@ -81,33 +81,17 @@ export function HallOfShame({ onSelectUser }: HallOfShameProps) {
     <section className="w-full bg-surface-container-lowest py-space-2xl border-t border-b border-white/5">
       <div className="max-w-[1440px] mx-auto px-margin-mobile md:px-margin">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-xl gap-space-md">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary-container font-mono text-label-code-sm uppercase font-semibold mb-space-sm border border-white/5">
-              <span className="material-symbols-outlined text-[16px]">gavel</span>
-              <span>Hall of Infamy</span>
-            </div>
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-on-surface font-extrabold tracking-tight">
-              Recent Public Excoriations
-            </h2>
-            <p className="font-body text-body-md text-on-surface-variant max-w-xl mt-1">
-              Real repos, genuine crimes against clean architecture, dissected by the Savage Linter.
-            </p>
+        <div className="mb-space-xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary-container font-mono text-label-code-sm uppercase font-semibold mb-space-sm border border-white/5">
+            <span className="material-symbols-outlined text-[16px]">gavel</span>
+            <span>Hall of Infamy</span>
           </div>
-
-          <div className="flex items-center gap-space-sm">
-            <button
-              type="button"
-              onClick={() => {
-                sounds.playBlip();
-                onSelectUser("torvalds");
-              }}
-              className="inline-flex items-center gap-space-xs px-space-lg py-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5"
-            >
-              <span>Explore All 24,000+ Receipts</span>
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-            </button>
-          </div>
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-on-surface font-extrabold tracking-tight">
+            Recent Public Excoriations
+          </h2>
+          <p className="font-body text-body-md text-on-surface-variant max-w-xl mt-1">
+            Real repos, genuine crimes against clean architecture, dissected by the Savage Linter. Click any dossier to inspect their live roast.
+          </p>
         </div>
 
         {/* Bento Grid of Detailed Dossiers */}
@@ -173,7 +157,7 @@ export function HallOfShame({ onSelectUser }: HallOfShameProps) {
                   }}
                   className="text-primary-container font-semibold hover:underline cursor-pointer flex items-center gap-0.5"
                 >
-                  <span>View Receipt {item.receiptId}</span>
+                  <span>Roast @{item.targetUser}</span>
                   <span>→</span>
                 </button>
               </div>

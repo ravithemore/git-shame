@@ -14,7 +14,7 @@ import { sounds } from "@/lib/audio";
 export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [activeTone, setActiveTone] = useState<RoastTone>("savage");
-  const [mode, setMode] = useState<"solo" | "fight" | "team">("solo");
+  const [mode, setMode] = useState<"solo" | "fight">("solo");
   const [roast, setRoast] = useState<RoastResult | null>(null);
   const [stats, setStats] = useState<GitHubStats | null>(null);
   const [battle, setBattle] = useState<VsBattleResult | null>(null);
@@ -110,7 +110,7 @@ export default function HomePage() {
     setMode("fight");
     setInputUsername(username);
     setRoast(null);
-    window.scrollTo({ top: 350, behavior: "smooth" });
+    window.scrollTo({ top: 220, behavior: "smooth" });
   };
 
   const handleToneChange = (tone: RoastTone) => {
@@ -125,15 +125,24 @@ export default function HomePage() {
       {/* Top Navigation */}
       <Navbar
         onRoastClick={() => {
+          setMode("solo");
           const input = document.getElementById("repo-input");
           if (input) {
             input.focus();
-            window.scrollTo({ top: 220, behavior: "smooth" });
+            window.scrollTo({ top: 180, behavior: "smooth" });
           }
+        }}
+        onFightClick={() => {
+          setMode("fight");
+          window.scrollTo({ top: 220, behavior: "smooth" });
+        }}
+        onHallOfShameClick={() => {
+          const el = document.getElementById("hall-of-shame");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
         }}
       />
 
-      <main className="w-full pt-20 flex-1">
+      <main className="w-full pt-28 sm:pt-32 flex-1">
         <div className="flex flex-col w-full relative overflow-hidden">
           {/* Hero Section */}
           <SearchHero
@@ -196,53 +205,46 @@ export default function HomePage() {
             <HallOfShame
               onSelectUser={(victimHandle) => {
                 setInputUsername(victimHandle);
+                setMode("solo");
                 handleRoastSubmit(victimHandle, activeTone);
               }}
             />
           </div>
 
-          {/* CALL TO ACTION TICKER BANNER */}
+          {/* Clean Call To Action Section */}
           <section className="w-full max-w-[1440px] mx-auto px-margin-mobile md:px-margin py-space-2xl">
             <div className="relative p-space-xl md:p-space-2xl rounded-3xl bg-gradient-to-r from-surface-container-high/90 via-surface-container-highest/90 to-surface-container-high/90 backdrop-blur-2xl text-center space-y-space-md shadow-2xl border border-white/5">
               <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-black text-on-surface">
                 Ready for the truth about your codebase?
               </h2>
               <p className="font-body text-body-md text-on-surface-variant max-w-xl mx-auto leading-relaxed">
-                Join 140,000+ developers discovering why their PRs take three weeks to approve.
-                Connect in 5 seconds without auth credentials.
+                Join thousands of developers discovering why their PRs take three weeks to approve.
+                Zero authentication required.
               </p>
-              <div className="pt-space-sm flex flex-wrap items-center justify-center gap-space-md">
+              <div className="pt-space-sm flex justify-center">
                 <button
                   type="button"
                   onClick={() => {
                     sounds.playBlip();
+                    setMode("solo");
                     const input = document.getElementById("repo-input");
                     if (input) {
                       input.focus();
-                      window.scrollTo({ top: 220, behavior: "smooth" });
+                      window.scrollTo({ top: 180, behavior: "smooth" });
                     }
                   }}
-                  className="inline-flex items-center justify-center px-space-xl py-3.5 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container font-body text-body-sm font-bold shadow-[0_0_24px_rgba(0,245,160,0.4)] transition-all active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 px-space-xl py-3.5 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container font-body text-body-sm font-bold shadow-[0_0_24px_rgba(0,245,160,0.4)] transition-all active:scale-95 cursor-pointer"
                 >
-                  <span className="material-symbols-outlined text-[20px] mr-1">terminal</span>
-                  <span>Enter Repository Name</span>
+                  <span className="material-symbols-outlined text-[20px]">terminal</span>
+                  <span>Enter Repository or Username</span>
                 </button>
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center px-space-xl py-3.5 rounded-full bg-surface-container-highest hover:bg-surface-bright text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5"
-                >
-                  <span className="material-symbols-outlined text-[18px] mr-1.5">code</span>
-                  <span>Install GitHub CI Action</span>
-                </a>
               </div>
             </div>
           </section>
         </div>
       </main>
 
-      {/* Footer */}
+      {/* Clean Footer */}
       <Footer />
     </div>
   );

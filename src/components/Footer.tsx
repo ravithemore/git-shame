@@ -3,11 +3,15 @@
 import React from "react";
 
 export function Footer() {
+  const handleScrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="w-full bg-surface-container-lowest mt-auto border-t border-white/5">
       <div className="max-w-[1440px] mx-auto px-margin-mobile md:px-margin py-space-xl">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-space-xl mb-space-xl">
-          {/* Col 1 */}
+          {/* Col 1: Brand */}
           <div className="space-y-space-sm md:col-span-1">
             <div className="flex items-center gap-space-sm">
               <div className="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center border border-white/5 shadow-[0_0_12px_rgba(0,245,160,0.15)]">
@@ -25,7 +29,7 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Col 2 */}
+          {/* Col 2: Live Sin Telemetry */}
           <div className="space-y-space-sm md:col-span-1">
             <h4 className="font-mono text-label-code-sm uppercase tracking-wider text-primary font-semibold">
               Live Sin Telemetry
@@ -50,62 +54,54 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Col 3 */}
+          {/* Col 3: Engine Features */}
           <div className="space-y-space-sm md:col-span-1">
             <h4 className="font-mono text-label-code-sm uppercase tracking-wider text-primary font-semibold">
-              Confessionals
+              Engine Capabilities
             </h4>
-            <ul className="space-y-space-xs font-body text-body-sm text-on-surface-variant">
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  &ldquo;WIP: temporary fix&rdquo; (2018)
-                </a>
+            <ul className="space-y-space-xs font-mono text-xs text-on-surface-variant">
+              <li className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px] text-primary-container">
+                  check_circle
+                </span>
+                <span>Gemini Flash Neural Roast</span>
               </li>
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  git push origin main --force
-                </a>
+              <li className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px] text-primary-container">
+                  check_circle
+                </span>
+                <span>Repo Fight 1v1 Deathmatch</span>
               </li>
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  any as unknown as never
-                </a>
+              <li className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px] text-primary-container">
+                  check_circle
+                </span>
+                <span>Thermal Debt Receipt Export</span>
               </li>
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  Wall of 4AM Architecture
-                </a>
+              <li className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-[14px] text-primary-container">
+                  check_circle
+                </span>
+                <span>4 AI Prosecutorial Voices</span>
               </li>
             </ul>
           </div>
 
-          {/* Col 4 */}
+          {/* Col 4: Quick Navigation */}
           <div className="space-y-space-sm md:col-span-1">
             <h4 className="font-mono text-label-code-sm uppercase tracking-wider text-primary font-semibold">
-              Protocol
+              Navigation
             </h4>
-            <ul className="space-y-space-xs font-body text-body-sm text-on-surface-variant">
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  Roast Engine API
-                </a>
-              </li>
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  CI/CD Shame Webhook
-                </a>
-              </li>
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  Zero-Mercy Benchmark
-                </a>
-              </li>
-              <li>
-                <a className="hover:text-primary transition-colors cursor-pointer" href="#hero">
-                  Privacy &amp; Redaction
-                </a>
-              </li>
-            </ul>
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={handleScrollToTop}
+                className="w-full text-left font-body text-xs text-on-surface-variant hover:text-primary-container transition-colors flex items-center justify-between p-2 rounded-xl bg-surface-container hover:bg-surface-container-high border border-white/5"
+              >
+                <span>Back to Top</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_upward</span>
+              </button>
+            </div>
           </div>
         </div>
 

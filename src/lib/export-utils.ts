@@ -1,17 +1,24 @@
-// Safe client-side dynamic wrappers for canvas-confetti and html-to-image
-// Prevents SSR crashes, Webpack ESM module interop issues, and "a[d] is not a function" errors
+"use client";
 
-export async function fireConfetti(options: {
+import confetti from "canvas-confetti";
+import { toPng } from "html-to-image";
+
+export function fireConfetti(options: {
   particleCount?: number;
   spread?: number;
   origin?: { x?: number; y?: number };
 } = {}) {
   if (typeof window === "undefined") return;
   try {
-    const confettiMod = await import("canvas-confetti");
-    const confettiFn = (confettiMod as any).default || confettiMod;
-    if (typeof confettiFn === "function") {
-      confettiFn(options);
+    const launch: any =
+      typeof confetti === "function"
+        ? confetti
+        : (confetti as any)?.default && typeof (confetti as any).default === "function"
+        ? (confetti as any).default
+        : null;
+
+    if (typeof launch === "function") {
+      launch(options);
     }
   } catch (err) {
     console.warn("Could not fire confetti:", err);
@@ -20,11 +27,12 @@ export async function fireConfetti(options: {
 
 export async function captureToPng(element: HTMLElement, options: Record<string, any> = {}): Promise<string> {
   if (typeof window === "undefined") throw new Error("Window not defined");
-  const htiMod = await import("html-to-image");
-  const toPngFn = htiMod.toPng || (htiMod as any).default?.toPng || (htiMod as any).toPng;
-  if (typeof toPngFn !== "function") {
-    throw new Error("toPng function not available in html-to-image module");
-  }
-  return toPngFn(element, options);
+
+  return toPng(element, {
+    cacheBust: true,
+    skipFonts: true,
+    pixelRatio: 2,
+    ...options,
+  });
 }
 
