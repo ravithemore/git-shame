@@ -196,7 +196,7 @@ Contributions, feature suggestions, and pull requests are welcome.
 
 - GitHub: [@ravithemore](https://github.com/ravithemore)
 - Project: [GitShame](https://github.com/ravithemore/git-shame)
-- Live Demo: [gitshame.dev](https://gitshame.dev)
+- Live Demo: [gitshame](https://gitshame.vercel.app/)
 
 ---
 
