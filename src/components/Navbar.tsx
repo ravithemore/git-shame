@@ -1,50 +1,103 @@
 "use client";
 
 import React from "react";
-import { Flame, ShieldAlert } from "lucide-react";
 
-function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
-    </svg>
-  );
+interface NavbarProps {
+  onRoastClick?: () => void;
 }
 
-export function Navbar() {
+export function Navbar({ onRoastClick }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 via-orange-500 to-amber-400 flex items-center justify-center shadow-lg shadow-rose-500/20 group-hover:scale-105 transition-transform">
-            <Flame className="w-5 h-5 text-white animate-pulse" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-xl tracking-tight text-white flex items-center gap-1.5">
-              Git<span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-400">Shame</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400">
-                AI ROASTER
-              </span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-surface/75 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] border-b border-surface-container-high/60">
+      <div className="h-20 max-w-[1440px] mx-auto px-margin-mobile md:px-margin flex items-center justify-between gap-space-md">
+        {/* Brand Logo */}
+        <div className="flex items-center gap-space-md">
+          <a className="flex items-center gap-space-sm group" href="/">
+            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-surface-container-high shadow-[0_0_16px_rgba(0,245,160,0.15)] group-hover:shadow-[0_0_24px_rgba(0,245,160,0.3)] transition-all duration-300">
+              <span className="material-symbols-outlined text-primary-container text-[22px]">terminal</span>
+            </div>
+            <span className="font-display text-xl text-on-surface tracking-tight font-extrabold">
+              Git<span className="text-primary-container">Shame</span>
+            </span>
+          </a>
+
+          {/* Live Sins Pulse Badge */}
+          <div className="hidden sm:inline-flex items-center gap-space-xs px-space-sm py-1 rounded-full bg-surface-container-high border border-outline-variant/30">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-container opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-container"></span>
+            </span>
+            <span className="font-mono text-[11px] text-primary uppercase tracking-wider font-semibold">
+              LIVE SINS
             </span>
           </div>
-        </a>
+        </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400">
-            <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-            <span>100% Free & Uncensored</span>
-          </div>
-
+        {/* Center Nav Links */}
+        <nav className="hidden xl:flex items-center gap-space-lg text-sm">
+          <a
+            href="#roaster"
+            className="transition-colors duration-200 text-primary-container font-semibold"
+          >
+            Roaster
+          </a>
+          <a
+            href="#excoriations"
+            className="text-on-surface-variant hover:text-on-surface transition-colors duration-200"
+          >
+            Debt Receipts
+          </a>
+          <a
+            href="#hall-of-shame"
+            className="text-on-surface-variant hover:text-on-surface transition-colors duration-200"
+          >
+            Hall of Shame
+          </a>
+          <a
+            href="#repo-fight"
+            className="text-on-surface-variant hover:text-on-surface transition-colors duration-200"
+          >
+            Repo Fight
+          </a>
           <a
             href="https://github.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-zinc-200 transition-colors"
+            className="text-on-surface-variant hover:text-on-surface transition-colors duration-200"
           >
-            <GithubIcon className="w-4 h-4" />
-            <span>GitHub</span>
+            Docs
           </a>
+        </nav>
+
+        {/* Right Action Buttons */}
+        <div className="flex items-center gap-space-md">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden md:inline-flex items-center gap-space-xs px-space-md py-2.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface-variant hover:text-on-surface text-xs font-mono transition-all duration-200 border border-outline-variant/30"
+          >
+            <span className="material-symbols-outlined text-[16px]">code</span>
+            <span>GitHub Star</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={onRoastClick || (() => {
+              const input = document.getElementById("repo-input");
+              if (input) {
+                input.focus();
+                window.scrollTo({ top: 180, behavior: "smooth" });
+              }
+            })}
+            className="inline-flex items-center justify-center px-space-lg py-2.5 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container text-xs font-bold tracking-tight shadow-[0_0_16px_rgba(0,245,160,0.3)] hover:shadow-[0_0_24px_rgba(0,245,160,0.5)] transition-all duration-200 active:scale-95"
+          >
+            Roast My Repo
+          </button>
+
+          <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0 border border-outline-variant/40">
+            <span className="material-symbols-outlined text-primary-container text-[18px]">person</span>
+          </div>
         </div>
       </div>
     </header>

@@ -24,13 +24,23 @@ export async function POST(req: NextRequest) {
       generateRoast(stats2, "savage"),
     ]);
 
-    // Ensure scores are never identical
+    // Ensure shame scores are never identical
     if (roast1.shameScore === roast2.shameScore) {
       if (stats1.publicRepos >= stats2.publicRepos) {
-        roast1.shameScore = Math.min(99, roast1.shameScore + 3);
+        roast1.shameScore = Math.min(99, roast1.shameScore + ((stats1.followers % 5) + 3));
       } else {
-        roast2.shameScore = Math.min(99, roast2.shameScore + 3);
+        roast2.shameScore = Math.min(99, roast2.shameScore + ((stats2.followers % 5) + 3));
       }
+    }
+
+    // Ensure titles are never identical
+    if (roast1.title === roast2.title) {
+      roast2.title = `Challenger: ${stats2.topLanguages[0]?.name || "Code"} Entropy Specialist`;
+    }
+
+    // Ensure verdicts are never identical
+    if (roast1.verdict === roast2.verdict) {
+      roast2.verdict = `Verdict: Runner-up in technical debt. Still an active hazard to continuous delivery.`;
     }
 
     // Dynamic category faceoffs

@@ -1,102 +1,186 @@
 "use client";
 
 import React from "react";
-import { Flame, Star, GitBranch, ArrowUpRight } from "lucide-react";
-import { RoastTone } from "@/types";
+import { sounds } from "@/lib/audio";
 
 interface HallOfShameProps {
-  onSelectVictim: (username: string) => void;
+  onSelectUser: (username: string) => void;
 }
 
-const CELEBRITY_VICTIMS = [
+const PUBLIC_EXCORIATIONS = [
   {
-    name: "Linus Torvalds",
-    handle: "torvalds",
-    avatar: "https://avatars.githubusercontent.com/u/1024025?v=4",
-    title: "Godfather of Git & C Rants",
-    tag: "Invincible Veteran",
-    score: 62,
-    preview: "Invented Git out of pure spite. Still doesn't understand your 400MB node_modules folder.",
+    repo: "mega-frontend-app",
+    handle: "enterprise-fintech",
+    badge: "JS",
+    badgeColor: "text-primary-container",
+    grade: "Grade: F-",
+    gradeColor: "bg-error-container/30 text-error",
+    snippetFile: "// src/utils/helpers.ts line 8421",
+    snippet: [
+      { text: "export const doMagic = (x: any): any => {", color: "text-error" },
+      { text: "  // don't touch this it breaks payments", color: "text-on-surface-variant" },
+      { text: "  return eval(atob(x)) as any;", color: "text-on-surface" },
+      { text: "};", color: "text-error" },
+    ],
+    critique:
+      '"You wrote 9,400 lines of Redux boilerplate to toggle a single modal. Even your bundler throws memory warnings out of sheer pity."',
+    metricIcon: "fire_extinguisher",
+    metricText: "84 Panic Pushes",
+    metricColor: "text-error",
+    receiptId: "#8901",
+    targetUser: "torvalds",
   },
   {
-    name: "Dan Abramov",
-    handle: "gaearon",
-    avatar: "https://avatars.githubusercontent.com/u/810438?v=4",
-    title: "Redux & React Alchemist",
-    tag: "State Machine Sinner",
-    score: 84,
-    preview: "Convinced millions of developers to write 47 files just to toggle a modal window.",
+    repo: "ai-autonomous-agent",
+    handle: "stealth-ai-corp",
+    badge: "PY",
+    badgeColor: "text-tertiary-container",
+    grade: "Grade: D",
+    gradeColor: "bg-error-container/30 text-error",
+    snippetFile: "// agent/decision_loop.py",
+    snippet: [
+      { text: "while True:", color: "text-tertiary" },
+      { text: "  try:", color: "text-on-surface-variant" },
+      { text: "    take_autonomous_action()", color: "text-on-surface" },
+      { text: "  except Exception: pass # yolo", color: "text-error" },
+    ],
+    critique:
+      '"Your \'Agentic Artificial General Intelligence\' is just 47 nested while-true loops and an OpenAI API key wrapped in bare except blocks."',
+    metricIcon: "visibility_off",
+    metricText: "0 Unit Tests",
+    metricColor: "text-secondary",
+    receiptId: "#8902",
+    targetUser: "gaearon",
   },
   {
-    name: "shadcn",
-    handle: "shadcn",
-    avatar: "https://avatars.githubusercontent.com/u/124599?v=4",
-    title: "Chief Copy-Paste Officer",
-    tag: "Modern Tailwind Legend",
-    score: 79,
-    preview: "Made copy-pasting code into your own project cool again. We salute the anti-npm rebellion.",
+    repo: "ultra-fast-kv-store",
+    handle: "systems-guru",
+    badge: "RS",
+    badgeColor: "text-secondary",
+    grade: "Grade: C-",
+    gradeColor: "bg-secondary-container/20 text-secondary",
+    snippetFile: "// src/memory_manager.rs",
+    snippet: [
+      { text: "pub unsafe fn allocate_block() {", color: "text-primary-container" },
+      { text: "  // compiler was screaming, had to hush it", color: "text-on-surface-variant" },
+      { text: "  std::mem::transmute(0x0 as *mut ());", color: "text-error" },
+      { text: "}", color: "text-primary-container" },
+    ],
+    critique:
+      '"Claims memory safety in the README; uses 312 `unsafe` blocks to dodge the borrow checker because \'lifetimes are for the weak\'."',
+    metricIcon: "memory",
+    metricText: "312 Unsafe Blocks",
+    metricColor: "text-error",
+    receiptId: "#8903",
+    targetUser: "shadcn",
   },
 ];
 
-export function HallOfShame({ onSelectVictim }: HallOfShameProps) {
+export function HallOfShame({ onSelectUser }: HallOfShameProps) {
   return (
-    <section className="max-w-4xl mx-auto px-4 py-12 border-t border-zinc-800/80">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold mb-2">
-          <Star className="w-3.5 h-3.5" />
-          <span>Hall of Fame & Shame</span>
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          Celebrity Code Sinners
-        </h2>
-        <p className="text-zinc-400 text-xs sm:text-sm mt-1">
-          Click to instantly roast famous open-source legends
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {CELEBRITY_VICTIMS.map((victim) => (
-          <div
-            key={victim.handle}
-            onClick={() => onSelectVictim(victim.handle)}
-            className="group cursor-pointer p-5 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-rose-500/60 hover:bg-zinc-900/40 transition-all duration-200 flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2.5">
-                  <img
-                    src={victim.avatar}
-                    alt={victim.name}
-                    className="w-10 h-10 rounded-xl object-cover ring-1 ring-zinc-800 group-hover:ring-rose-500/50 transition-all"
-                    crossOrigin="anonymous"
-                  />
-                  <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-rose-400 transition-colors">
-                      {victim.name}
-                    </h4>
-                    <span className="text-[11px] font-mono text-zinc-500">@{victim.handle}</span>
-                  </div>
-                </div>
-                <ArrowUpRight className="w-4 h-4 text-zinc-600 group-hover:text-rose-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-              </div>
-
-              <div className="inline-block px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[10px] font-mono text-zinc-400 font-semibold mb-2">
-                {victim.title}
-              </div>
-
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                {victim.preview}
-              </p>
+    <section className="w-full bg-surface-container-lowest py-space-2xl border-t border-b border-white/5">
+      <div className="max-w-[1440px] mx-auto px-margin-mobile md:px-margin">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-space-xl gap-space-md">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary-container font-mono text-label-code-sm uppercase font-semibold mb-space-sm border border-white/5">
+              <span className="material-symbols-outlined text-[16px]">gavel</span>
+              <span>Hall of Infamy</span>
             </div>
-
-            <div className="mt-4 pt-3 border-t border-zinc-900 flex items-center justify-between text-[11px] font-mono">
-              <span className="text-zinc-500">Estimated Shame</span>
-              <span className="text-rose-400 font-bold">{victim.score}/100</span>
-            </div>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-on-surface font-extrabold tracking-tight">
+              Recent Public Excoriations
+            </h2>
+            <p className="font-body text-body-md text-on-surface-variant max-w-xl mt-1">
+              Real repos, genuine crimes against clean architecture, dissected by the Savage Linter.
+            </p>
           </div>
-        ))}
+
+          <div className="flex items-center gap-space-sm">
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playBlip();
+                onSelectUser("torvalds");
+              }}
+              className="inline-flex items-center gap-space-xs px-space-lg py-2.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5"
+            >
+              <span>Explore All 24,000+ Receipts</span>
+              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Bento Grid of Detailed Dossiers */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+          {PUBLIC_EXCORIATIONS.map((item, idx) => (
+            <div
+              key={idx}
+              className="p-space-lg rounded-3xl bg-surface-container/70 backdrop-blur-2xl shadow-xl flex flex-col justify-between hover:bg-surface-container/90 transition-all duration-300 border border-white/5"
+            >
+              <div>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-space-md">
+                  <div className="flex items-center gap-space-sm">
+                    <div
+                      className={`w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center font-mono font-bold ${item.badgeColor} border border-white/5`}
+                    >
+                      {item.badge}
+                    </div>
+                    <div>
+                      <h3 className="font-display text-body-lg font-bold text-on-surface">
+                        {item.repo}
+                      </h3>
+                      <span className="font-mono text-label-code-sm text-outline">
+                        @{item.handle}
+                      </span>
+                    </div>
+                  </div>
+                  <span
+                    className={`px-2.5 py-1 rounded-full font-mono text-[12px] font-bold ${item.gradeColor}`}
+                  >
+                    {item.grade}
+                  </span>
+                </div>
+
+                {/* Terminal Snippet */}
+                <div className="p-space-md rounded-2xl bg-surface-container-lowest font-mono text-label-code-sm text-on-surface space-y-1 mb-space-md shadow-inner border border-white/5 overflow-x-auto">
+                  <div className="text-outline text-[11px]">{item.snippetFile}</div>
+                  {item.snippet.map((line, lIdx) => (
+                    <div key={lIdx} className={line.color}>
+                      {line.text}
+                    </div>
+                  ))}
+                </div>
+
+                <p className="font-body text-body-sm text-on-surface-variant leading-relaxed">
+                  {item.critique}
+                </p>
+              </div>
+
+              {/* Card Footer */}
+              <div className="pt-space-md mt-space-md flex items-center justify-between font-mono text-[12px] text-outline border-t border-white/5">
+                <span className="flex items-center gap-1">
+                  <span className={`material-symbols-outlined text-[16px] ${item.metricColor}`}>
+                    {item.metricIcon}
+                  </span>
+                  <span>{item.metricText}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playBlip();
+                    onSelectUser(item.targetUser);
+                  }}
+                  className="text-primary-container font-semibold hover:underline cursor-pointer flex items-center gap-0.5"
+                >
+                  <span>View Receipt {item.receiptId}</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
-

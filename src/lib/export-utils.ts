@@ -27,3 +27,4 @@ export async function captureToPng(element: HTMLElement, options: Record<string,
   }
   return toPngFn(element, options);
 }
+

@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Swords, Trophy, Skull, Flame, Share2, ArrowRight, Download, Zap, RefreshCw } from "lucide-react";
 import { fireConfetti, captureToPng } from "@/lib/export-utils";
 import { VsBattleResult } from "@/types";
+import { sounds } from "@/lib/audio";
 
 interface VsBattleCardProps {
   battle: VsBattleResult;
@@ -15,12 +15,13 @@ export function VsBattleCard({ battle, onReset }: VsBattleCardProps) {
   const battleRef = useRef<HTMLDivElement>(null);
   const [downloading, setDownloading] = useState(false);
 
-  // Health/Dignity remaining (lower shame = higher dignity)
+  // Dignity remaining (lower shame = higher dignity)
   const p1Dignity = Math.max(5, 100 - player1.shameScore);
   const p2Dignity = Math.max(5, 100 - player2.shameScore);
 
   const handleShare = () => {
-    const text = `⚔️ REPO FIGHT RESULTS:\n@${player1.username} (${player1.shameScore}/100 Shame) VS @${player2.username} (${player2.shameScore}/100 Shame)\n\nCrown of Shame goes to: @${winner} 👑\n\nBattle your coworker at gitshame.dev #GitShame #DevHumor`;
+    sounds.playBlip();
+    const text = `⚔️ REPO FIGHT 1v1 RESULTS:\n@${player1.username} (${player1.shameScore}/100 Shame) VS @${player2.username} (${player2.shameScore}/100 Shame)\n\nCrown of Shame awarded to: @${winner} 👑\n\nBattle your coworker at gitshame.dev #GitShame #DevHumor`;
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
   };
 
@@ -30,7 +31,7 @@ export function VsBattleCard({ battle, onReset }: VsBattleCardProps) {
       setDownloading(true);
       const dataUrl = await captureToPng(battleRef.current, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 2.5,
       });
 
       const link = document.createElement("a");
@@ -51,262 +52,280 @@ export function VsBattleCard({ battle, onReset }: VsBattleCardProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pb-16 space-y-6">
-      {/* Arcade Match Header */}
-      <div className="text-center space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-400 text-zinc-950 text-xs font-black uppercase tracking-wider shadow-[3px_3px_0px_0px_rgba(255,255,255,0.2)]">
-          <Zap className="w-3.5 h-3.5 fill-zinc-950" />
-          <span>ARCADE DEATHMATCH • ROUND 1</span>
+    <div className="max-w-5xl mx-auto px-margin-mobile md:px-margin pb-space-2xl space-y-space-lg">
+      {/* Top Arena Header */}
+      <div className="text-center space-y-space-xs max-w-3xl mx-auto">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/15 text-secondary font-mono text-xs uppercase font-semibold">
+          <span className="material-symbols-outlined text-[16px]">swords</span>
+          <span>Head to Head Showdown</span>
         </div>
-        <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tighter uppercase italic">
-          BATTLE OF TECHNICAL DEBT
+        <h2 className="font-display text-3xl sm:text-5xl font-black text-on-surface tracking-tight">
+          Repo Fight Arena: Who Ships More Garbage?
         </h2>
-        <p className="text-zinc-300 text-xs sm:text-sm font-mono max-w-xl mx-auto bg-zinc-900/80 p-2.5 rounded-xl border border-zinc-800">
-          ⚖️ {battleSummary}
+        <p className="font-body text-sm sm:text-base text-on-surface-variant max-w-xl mx-auto">
+          {battleSummary}
         </p>
       </div>
 
-      {/* Main Battle Arena Card (Exportable as PNG) */}
+      {/* Main Battle Arena Card (Exportable to PNG) */}
       <div
         ref={battleRef}
-        id="repo-battle-arena"
-        className="p-5 sm:p-8 rounded-3xl bg-zinc-950 border-2 border-zinc-800 shadow-2xl relative overflow-hidden"
+        id="repo-fight-canvas"
+        className="rounded-3xl bg-surface-container/90 backdrop-blur-3xl p-space-lg sm:p-space-xl relative overflow-hidden shadow-2xl border border-white/10 space-y-space-lg"
       >
-        {/* Subtle retro scanlines effect */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] pointer-events-none opacity-40 z-0" />
+        {/* Ambient glow */}
+        <div className="absolute -right-24 -bottom-24 w-96 h-96 bg-primary-container/10 rounded-full blur-[100px] pointer-events-none" />
 
-        {/* Top Arcade Health / Dignity Bars */}
-        <div className="relative z-10 grid grid-cols-2 gap-4 sm:gap-8 mb-8 pb-6 border-b border-zinc-800">
+        {/* Health / Dignity Bars */}
+        <div className="grid grid-cols-2 gap-space-md sm:gap-space-xl pb-space-md border-b border-white/10">
           {/* Player 1 Health */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs font-mono font-black">
-              <span className="text-rose-400 uppercase truncate">@{player1.username}</span>
-              <span className="text-zinc-400 text-[10px]">DIGNITY: {p1Dignity}%</span>
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-xs font-mono font-bold">
+              <span className="text-primary-container uppercase truncate">@{player1.username}</span>
+              <span className="text-on-surface-variant text-[11px]">Dignity: {p1Dignity}%</span>
             </div>
-            <div className="h-4 sm:h-5 bg-zinc-900 rounded-lg p-0.5 border border-zinc-800 overflow-hidden">
+            <div className="h-3 sm:h-4 bg-surface-container-lowest rounded-full p-0.5 border border-white/5 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-600 rounded transition-all duration-1000"
+                className="h-full bg-gradient-to-r from-secondary to-primary-container rounded-full transition-all duration-1000 shadow-[0_0_12px_rgba(0,245,160,0.5)]"
                 style={{ width: `${p1Dignity}%` }}
               />
             </div>
           </div>
 
           {/* Player 2 Health */}
-          <div className="space-y-1.5 text-right">
-            <div className="flex items-center justify-between text-xs font-mono font-black">
-              <span className="text-zinc-400 text-[10px]">DIGNITY: {p2Dignity}%</span>
-              <span className="text-purple-400 uppercase truncate">@{player2.username}</span>
+          <div className="space-y-1 text-right">
+            <div className="flex items-center justify-between text-xs font-mono font-bold">
+              <span className="text-on-surface-variant text-[11px]">Dignity: {p2Dignity}%</span>
+              <span className="text-tertiary-container uppercase truncate">@{player2.username}</span>
             </div>
-            <div className="h-4 sm:h-5 bg-zinc-900 rounded-lg p-0.5 border border-zinc-800 overflow-hidden">
+            <div className="h-3 sm:h-4 bg-surface-container-lowest rounded-full p-0.5 border border-white/5 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-l from-emerald-500 via-amber-500 to-purple-600 rounded transition-all duration-1000 ml-auto"
+                className="h-full bg-gradient-to-l from-tertiary to-tertiary-container rounded-full transition-all duration-1000 ml-auto shadow-[0_0_12px_rgba(95,233,255,0.5)]"
                 style={{ width: `${p2Dignity}%` }}
               />
             </div>
           </div>
         </div>
 
-        {/* Side-by-Side Contenders Grid */}
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-          {/* Contender 1 */}
+        {/* 1v1 Contenders Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-11 gap-space-md items-stretch">
+          {/* Fighter 1 (Corner A) */}
           <div
-            className={`p-6 rounded-2xl relative transition-all flex flex-col justify-between ${
+            className={`md:col-span-5 p-space-lg rounded-2xl relative transition-all flex flex-col justify-between border ${
               winner === player1.username
-                ? "bg-rose-950/30 border-2 border-rose-500 shadow-[0_0_25px_rgba(244,63,94,0.15)]"
-                : "bg-zinc-900/60 border border-zinc-800"
+                ? "bg-surface-container-high/90 border-primary-container/80 shadow-[0_0_30px_rgba(0,245,160,0.2)]"
+                : "bg-surface-container-lowest border-white/5"
             }`}
           >
             {winner === player1.username && (
-              <div className="absolute -top-3.5 right-4 px-3 py-1 bg-rose-600 text-white font-mono text-[11px] font-black uppercase rounded shadow-lg transform rotate-2 flex items-center gap-1">
-                <Skull className="w-3.5 h-3.5" />
-                <span>👑 SHAME CHAMPION</span>
+              <div className="absolute -top-3 right-4 px-3 py-1 bg-primary-container text-on-primary-container font-mono text-[10px] font-black uppercase rounded-full shadow-lg flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">military_tech</span>
+                <span>SHAME CHAMPION</span>
               </div>
             )}
 
             <div>
-              <div className="flex items-center gap-3.5 mb-4">
-                <div className="relative">
-                  <img
-                    src={player1.avatarUrl}
-                    alt={player1.username}
-                    className="w-16 h-16 rounded-2xl object-cover ring-2 ring-rose-500/50 bg-zinc-900"
-                    crossOrigin="anonymous"
-                  />
-                  <span className="absolute -bottom-1 -right-1 text-xs px-1.5 py-0.5 rounded bg-zinc-950 border border-zinc-700 text-rose-400 font-mono font-black">
-                    P1
-                  </span>
-                </div>
+              <div className="flex items-center justify-between mb-space-xs">
+                <span className="font-mono text-label-code-sm text-primary-container font-semibold">
+                  CORNER A
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-surface-container font-mono text-[11px] text-outline">
+                  {winner === player1.username ? "Supreme Sinner" : "Contender"}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-space-sm mb-space-md">
+                <img
+                  src={player1.avatarUrl}
+                  alt={player1.username}
+                  className="w-14 h-14 rounded-2xl object-cover ring-2 ring-primary-container/50 bg-surface-container"
+                  crossOrigin="anonymous"
+                />
                 <div>
-                  <h3 className="text-xl font-black text-white">{player1.name}</h3>
-                  <span className="text-xs font-mono text-zinc-400">@{player1.username}</span>
-                  <div className="mt-1 text-[11px] font-mono text-rose-400 font-bold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20 inline-block">
+                  <h3 className="font-display text-lg font-bold text-on-surface">{player1.name}</h3>
+                  <span className="font-mono text-xs text-on-surface-variant">
+                    @{player1.username}
+                  </span>
+                  <div className="font-mono text-[11px] text-primary truncate max-w-[200px]">
                     {player1.title}
                   </div>
                 </div>
               </div>
 
-              {/* Score Display */}
-              <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between mb-4">
-                <span className="text-xs font-mono uppercase text-zinc-400 font-bold">Shame Rating</span>
-                <span className="text-3xl font-black font-mono text-rose-400">
-                  {player1.shameScore}<span className="text-xs text-zinc-600 font-normal">/100</span>
+              {/* Score Box */}
+              <div className="p-space-md rounded-xl bg-surface-container-highest/60 border border-white/5 flex items-center justify-between mb-space-sm">
+                <span className="font-mono text-xs uppercase text-on-surface-variant font-bold">
+                  Shame Index
+                </span>
+                <span className="font-display text-3xl font-black text-primary-container">
+                  {player1.shameScore}
+                  <span className="text-xs text-on-surface-variant font-normal">/100</span>
                 </span>
               </div>
 
-              {/* Sarcastic Quote */}
-              <p className="text-xs text-zinc-300 italic bg-zinc-950/70 p-3 rounded-xl border border-zinc-800/60 leading-relaxed">
+              <p className="font-body text-xs text-on-surface-variant italic bg-surface-container-highest/40 p-space-sm rounded-xl border border-white/5">
                 &ldquo;{player1.verdict}&rdquo;
               </p>
             </div>
 
-            {/* Offense Tags */}
-            <div className="mt-4 pt-3 border-t border-zinc-800/60 flex flex-wrap gap-1.5">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                Archetype: {player1.devPersonality}
+            <div className="mt-space-md pt-space-xs border-t border-white/5 flex flex-wrap gap-1">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant">
+                {player1.devPersonality}
               </span>
             </div>
           </div>
 
-          {/* Contender 2 */}
+          {/* VS Badge */}
+          <div className="md:col-span-1 flex items-center justify-center my-2 md:my-0">
+            <div className="w-12 h-12 rounded-full bg-surface-container-highest shadow-xl flex items-center justify-center font-display text-headline-sm font-black text-primary-container border border-white/10">
+              VS
+            </div>
+          </div>
+
+          {/* Fighter 2 (Corner B) */}
           <div
-            className={`p-6 rounded-2xl relative transition-all flex flex-col justify-between ${
+            className={`md:col-span-5 p-space-lg rounded-2xl relative transition-all flex flex-col justify-between border ${
               winner === player2.username
-                ? "bg-purple-950/30 border-2 border-purple-500 shadow-[0_0_25px_rgba(168,85,247,0.15)]"
-                : "bg-zinc-900/60 border border-zinc-800"
+                ? "bg-surface-container-high/90 border-tertiary-container/80 shadow-[0_0_30px_rgba(95,233,255,0.2)]"
+                : "bg-surface-container-lowest border-white/5"
             }`}
           >
             {winner === player2.username && (
-              <div className="absolute -top-3.5 right-4 px-3 py-1 bg-purple-600 text-white font-mono text-[11px] font-black uppercase rounded shadow-lg transform rotate-2 flex items-center gap-1">
-                <Skull className="w-3.5 h-3.5" />
-                <span>👑 SHAME CHAMPION</span>
+              <div className="absolute -top-3 right-4 px-3 py-1 bg-tertiary-container text-on-tertiary-container font-mono text-[10px] font-black uppercase rounded-full shadow-lg flex items-center gap-1">
+                <span className="material-symbols-outlined text-[14px]">military_tech</span>
+                <span>SHAME CHAMPION</span>
               </div>
             )}
 
             <div>
-              <div className="flex items-center gap-3.5 mb-4">
-                <div className="relative">
-                  <img
-                    src={player2.avatarUrl}
-                    alt={player2.username}
-                    className="w-16 h-16 rounded-2xl object-cover ring-2 ring-purple-500/50 bg-zinc-900"
-                    crossOrigin="anonymous"
-                  />
-                  <span className="absolute -bottom-1 -right-1 text-xs px-1.5 py-0.5 rounded bg-zinc-950 border border-zinc-700 text-purple-400 font-mono font-black">
-                    P2
-                  </span>
-                </div>
+              <div className="flex items-center justify-between mb-space-xs">
+                <span className="font-mono text-label-code-sm text-tertiary-container font-semibold">
+                  CORNER B
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-surface-container font-mono text-[11px] text-outline">
+                  {winner === player2.username ? "Supreme Sinner" : "Challenger"}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-space-sm mb-space-md">
+                <img
+                  src={player2.avatarUrl}
+                  alt={player2.username}
+                  className="w-14 h-14 rounded-2xl object-cover ring-2 ring-tertiary-container/50 bg-surface-container"
+                  crossOrigin="anonymous"
+                />
                 <div>
-                  <h3 className="text-xl font-black text-white">{player2.name}</h3>
-                  <span className="text-xs font-mono text-zinc-400">@{player2.username}</span>
-                  <div className="mt-1 text-[11px] font-mono text-purple-400 font-bold bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20 inline-block">
+                  <h3 className="font-display text-lg font-bold text-on-surface">{player2.name}</h3>
+                  <span className="font-mono text-xs text-on-surface-variant">
+                    @{player2.username}
+                  </span>
+                  <div className="font-mono text-[11px] text-tertiary truncate max-w-[200px]">
                     {player2.title}
                   </div>
                 </div>
               </div>
 
-              {/* Score Display */}
-              <div className="p-3.5 rounded-xl bg-zinc-950 border border-zinc-800/80 flex items-center justify-between mb-4">
-                <span className="text-xs font-mono uppercase text-zinc-400 font-bold">Shame Rating</span>
-                <span className="text-3xl font-black font-mono text-purple-400">
-                  {player2.shameScore}<span className="text-xs text-zinc-600 font-normal">/100</span>
+              {/* Score Box */}
+              <div className="p-space-md rounded-xl bg-surface-container-highest/60 border border-white/5 flex items-center justify-between mb-space-sm">
+                <span className="font-mono text-xs uppercase text-on-surface-variant font-bold">
+                  Shame Index
+                </span>
+                <span className="font-display text-3xl font-black text-tertiary-container">
+                  {player2.shameScore}
+                  <span className="text-xs text-on-surface-variant font-normal">/100</span>
                 </span>
               </div>
 
-              {/* Sarcastic Quote */}
-              <p className="text-xs text-zinc-300 italic bg-zinc-950/70 p-3 rounded-xl border border-zinc-800/60 leading-relaxed">
+              <p className="font-body text-xs text-on-surface-variant italic bg-surface-container-highest/40 p-space-sm rounded-xl border border-white/5">
                 &ldquo;{player2.verdict}&rdquo;
               </p>
             </div>
 
-            {/* Offense Tags */}
-            <div className="mt-4 pt-3 border-t border-zinc-800/60 flex flex-wrap gap-1.5">
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 border border-zinc-800">
-                Archetype: {player2.devPersonality}
+            <div className="mt-space-md pt-space-xs border-t border-white/5 flex flex-wrap gap-1">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant">
+                {player2.devPersonality}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Category Round-By-Round Breakdown */}
-        <div className="relative z-10 mt-8 pt-6 border-t border-zinc-800">
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="text-xs font-black text-zinc-300 uppercase tracking-widest font-mono flex items-center gap-2">
-              <Swords className="w-4 h-4 text-amber-400" />
-              <span>Tale of the Tape: Category Head-to-Head</span>
-            </h4>
-            <span className="text-[10px] font-mono text-zinc-500">Judged by AI</span>
-          </div>
-
-          <div className="space-y-2.5">
+        {/* Category Faceoffs Grid */}
+        <div className="space-y-space-xs pt-space-md border-t border-white/10">
+          <h4 className="font-mono text-xs uppercase text-outline tracking-wider font-bold mb-space-sm">
+            Tale of the Tape • Offense Breakdown
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
             {categoryWinners.map((cat, i) => (
               <div
                 key={i}
-                className="p-3 rounded-xl bg-zinc-900/80 border border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                className="p-space-md rounded-2xl bg-surface-container-lowest border border-white/5 space-y-1"
               >
-                <div>
-                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <span className="text-zinc-500 font-mono text-[10px]">#{i + 1}</span>
-                    <span>{cat.category}</span>
-                  </div>
-                  <div className="text-[11px] text-zinc-400 mt-0.5 font-mono">{cat.reason}</div>
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="font-bold text-on-surface">{cat.category}</span>
+                  <span className="text-primary-container font-semibold">
+                    Winner: @{cat.winner}
+                  </span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-zinc-950 text-xs font-mono text-rose-400 font-black border border-zinc-800 self-start sm:self-auto flex-shrink-0">
-                  <span>Guilty:</span>
-                  <span>@{cat.winner}</span>
-                </div>
+                <p className="font-body text-xs text-on-surface-variant">{cat.reason}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Watermark */}
-        <div className="relative z-10 mt-6 pt-4 border-t border-zinc-800/60 flex items-center justify-between text-[11px] font-mono text-zinc-500">
-          <div className="flex items-center gap-1.5 font-bold text-zinc-400">
-            <Flame className="w-3.5 h-3.5 text-rose-500" />
-            <span>GitShame.dev • Repo Fight</span>
+        {/* Arena Footer Badges */}
+        <div className="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-md text-on-surface-variant font-body text-xs border-t border-white/5">
+          <div className="flex items-center gap-space-md">
+            <span className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-[16px] text-primary-container">
+                done_all
+              </span>
+              Real Git Blame Metrics
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-[16px] text-primary-container">
+                done_all
+              </span>
+              Hall of Shame Rank
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-[16px] text-primary-container">
+                done_all
+              </span>
+              Shareable VS Card
+            </span>
           </div>
-          <span>Share the damage</span>
+
+          <div className="flex items-center gap-space-xs">
+            <button
+              type="button"
+              onClick={handleShare}
+              className="px-space-md py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5 flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-[16px]">share</span>
+              <span>Share to X</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={downloading}
+              className="px-space-lg py-2 rounded-full bg-primary-container hover:bg-secondary-container text-on-primary-container font-body text-body-sm font-bold shadow-[0_0_16px_rgba(0,245,160,0.3)] transition-all flex items-center gap-1.5 disabled:opacity-50"
+            >
+              <span className="material-symbols-outlined text-[16px]">download</span>
+              <span>{downloading ? "Exporting..." : "Download Match Card"}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                sounds.playBlip();
+                onReset();
+              }}
+              className="px-space-md py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-body text-body-sm font-semibold transition-all border border-white/5 flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-[16px]">refresh</span>
+              <span>New Battle</span>
+            </button>
+          </div>
         </div>
-      </div>
-
-      {/* Action Buttons Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <button
-          type="button"
-          onClick={handleDownload}
-          disabled={downloading}
-          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-orange-500 hover:from-rose-500 hover:to-orange-400 text-white font-bold text-xs shadow-lg shadow-rose-500/20 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-        >
-          {downloading ? (
-            <>
-              <RefreshCw className="w-4 h-4 animate-spin" />
-              <span>Exporting Arena...</span>
-            </>
-          ) : (
-            <>
-              <Download className="w-4 h-4" />
-              <span>Download Battle Card</span>
-            </>
-          )}
-        </button>
-
-        <button
-          type="button"
-          onClick={handleShare}
-          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-bold text-xs transition-all flex items-center justify-center gap-2"
-        >
-          <Share2 className="w-4 h-4 text-sky-400" />
-          <span>Post Verdict on X</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onReset}
-          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 font-bold text-xs transition-colors flex items-center justify-center gap-2"
-        >
-          <span>Rematch / New Fight</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
       </div>
     </div>
   );
